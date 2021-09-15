@@ -27,7 +27,7 @@
 	<update id="update" parameterType="boardVO">
 		UPDATE BOARD SET title = #{title},
 		content = #{content},
-		writer = #{writer},
+		writer = #{writer}
 		WHERE seq = #{seq} AND password = #{password}
 	</update>
 	
