@@ -3,9 +3,12 @@ package board.dao;
 import java.util.List;
 
 import board.domain.BoardVO;
+import board.domain.Criteria;
 
 public interface BoardDao {
-	public abstract List<BoardVO> list();
+	public abstract List<BoardVO> list(Criteria cri) throws Exception;
+	
+	public abstract int listCount() throws Exception;
 	
 	public abstract int delete(BoardVO boardVO);
 	

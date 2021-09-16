@@ -6,6 +6,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
 import board.domain.BoardVO;
+import board.domain.Criteria;
 
 @Repository
 public class BoardDaoMybatis implements BoardDao{
@@ -21,8 +22,13 @@ public class BoardDaoMybatis implements BoardDao{
 	}
 	
 	@Override
-	public List<BoardVO> list(){
-		return sqlSessionTemplate.selectList("list");
+	public List<BoardVO> list(Criteria cri) throws Exception {
+		return sqlSessionTemplate.selectList("listPage", cri);
+	}
+	
+	@Override
+	public int listCount() throws Exception {
+		return sqlSessionTemplate.selectOne("listCount");
 	}
 	
 	@Override

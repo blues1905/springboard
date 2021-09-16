@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
 import board.domain.BoardVO;
+import board.domain.Criteria;
+import board.domain.PageMaker;
 import board.service.BoardService;
 
 @Controller
@@ -24,9 +26,17 @@ public class BoardController {
 		this.boardService = boardService;
 	}
 	
-	@RequestMapping(value="/board/list")
-	public String list(Model model) {
-		model.addAttribute("boardList", boardService.list());
+	@RequestMapping(value="/board/list", method = RequestMethod.GET)
+	public String list(Model model, Criteria cri) throws Exception{
+		
+		model.addAttribute("boardList", boardService.list(cri));
+		
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setCri(cri);
+		pageMaker.setTotalCount(boardService.listCount());
+		
+		model.addAttribute("pageMaker", pageMaker);
+		
 		return "/board/list";
 	}
 	@RequestMapping(value="board/read/{seq}")

@@ -3,9 +3,35 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="boardDAO">
-	<select id="list" resultType="boardVO">
-		SELECT * FROM BOARD
-		ORDER BY seq
+	<select id="listPage" resultType="boardVO" parameterType="board.domain.Criteria">
+		SELECT  SEQ,
+		        TITLE,
+		        CONTENT,
+		        WRITER,
+		        PASSWORD,
+		        REGDATE,
+		        CNT
+		FROM   (
+		        SELECT  SEQ,
+		                TITLE,
+		                CONTENT,
+		                WRITER,
+		                PASSWORD,
+		                REGDATE,
+		                CNT,
+		                ROW_NUMBER() OVER(ORDER BY SEQ DESC) AS rNum
+		        FROM BOARD
+		                    ) B
+		WHERE rNum BETWEEN 1 AND 10
+		ORDER BY SEQ DESC
+	</select>
+	
+	<select id="listCount" resultType="int">
+	<![CDATA[
+		SELECT COUNT(SEQ)
+			FROM BOARD
+		WHERE SEQ > 0
+	]]>
 	</select>
 	
 	<select id="select" parameterType="int" resultType="boardVO">

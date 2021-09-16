@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import board.dao.BoardDao;
 import board.domain.BoardVO;
+import board.domain.Criteria;
 
 @Service
 public class BoardServiceImpl implements BoardService{
@@ -20,8 +21,12 @@ public class BoardServiceImpl implements BoardService{
 		this.boardDao = boardDao;
 	}
 	@Override
-	public List<BoardVO> list() {
-		return boardDao.list();
+	public List<BoardVO> list(Criteria cri) throws Exception {
+		return boardDao.list(cri);
+	}
+	@Override
+	public int listCount() throws Exception {
+		return boardDao.listCount();
 	}
 	@Override
 	public int delete(BoardVO boardVO) {
