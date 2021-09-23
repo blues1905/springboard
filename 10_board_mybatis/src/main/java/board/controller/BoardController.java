@@ -1,7 +1,12 @@
 package board.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+
 import javax.validation.Valid;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import board.domain.BoardVO;
 import board.domain.Criteria;
@@ -47,19 +53,33 @@ public class BoardController {
 	//새 글 작성을 위한 요청을 처리
 	@RequestMapping(value="/board/write", method=RequestMethod.GET)
 	public String write(Model model){
+		
 		model.addAttribute("boardVO", new BoardVO());
 		return "/board/write";
 	}
 	
 	//새 글 등록을 위한 요청을 처리
 	@RequestMapping(value="/board/write", method=RequestMethod.POST)
-	public String write(@Valid BoardVO boardVO, BindingResult bindingResult) {
+	public String write(@Valid BoardVO boardVO, BindingResult bindingResult) throws IOException {
+		String fileName = null;
+		MultipartFile uploadFile = boardVO.getUploadFile();
+		//파일업로드 처리
 		if(bindingResult.hasErrors()) {
 			return "/board/write";
 		}
+		if(!uploadFile.isEmpty()) {
+			String originalFileName = uploadFile.getOriginalFilename();
+			String ext = FilenameUtils.getExtension(originalFileName);
+			//확장자 구하기
+			UUID uuid = UUID.randomUUID();	//UUID 구하기
+			fileName = uuid + "." + ext;
+			uploadFile.transferTo(new File("C:\\upload\\" + fileName));
+		}
+		boardVO.setFileName(fileName);
 		boardService.write(boardVO);
 		return "redirect:/board/list";
 	}
+		
 	
 	//글 수정 기능
 	@RequestMapping(value="/board/edit/{seq}", method=RequestMethod.GET)

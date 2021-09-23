@@ -40,11 +40,13 @@
 	</select>
 	
 	<insert id="insert" parameterType="boardVO">
+		<![CDATA[
 		INSERT INTO BOARD
-		(seq, title, content, writer, password, regDate, cnt)
+		(seq, title, content, writer, password, regDate, cnt, file_name)
 		VALUES
 		(BOARD_SEQ.nextval, 
-			#{title}, #{content}, #{writer}, #{password}, SYSDATE, 0)
+			#{title}, #{content}, #{writer}, #{password}, SYSDATE, 0, #{fileName})
+			]]>
 		<selectKey keyProperty="seq" resultType="Integer">
 			SELECT NVL(MAX(seq), 0) FROM BOARD
 		</selectKey>

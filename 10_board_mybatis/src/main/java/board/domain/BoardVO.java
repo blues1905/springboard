@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import org.apache.ibatis.type.Alias;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.web.multipart.MultipartFile;
 
 @Alias("BoardVO")
 public class BoardVO {
@@ -21,6 +22,8 @@ public class BoardVO {
 	private int password;
 	private Timestamp regDate;
 	private int cnt;
+	private String fileName;
+	private MultipartFile uploadFile;
 	
 	public BoardVO() {}
 
@@ -39,6 +42,22 @@ public class BoardVO {
 
 	public void setSeq(int seq) {
 		this.seq = seq;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public MultipartFile getUploadFile() {
+		return uploadFile;
+	}
+
+	public void setUploadFile(MultipartFile uploadFile) {
+		this.uploadFile = uploadFile;
 	}
 
 	public String getTitle() {
@@ -92,8 +111,10 @@ public class BoardVO {
 	@Override
 	public String toString() {
 		return "BoardVO [seq=" + seq + ", title=" + title + ", content=" + content + ", writer=" + writer
-				+ ", password=" + password + ", regDate=" + regDate + ", cnt=" + cnt + "]";
+				+ ", password=" + password + ", regDate=" + regDate + ", cnt=" + cnt + ", fileName=" + fileName + "]";
 	}
+
+	
 	
 	
 }

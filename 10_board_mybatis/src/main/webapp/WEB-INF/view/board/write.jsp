@@ -9,7 +9,7 @@
 <title>새 글 쓰기</title>
 </head>
 <body>
-	<form:form commandName="boardVO" method="POST">
+	<form:form commandName="boardVO" method="POST" entype="multipart/form-data">
 		<table border="1">
 			<tr>
 				<th><form:label path="title">제목</form:label></th>
@@ -32,9 +32,14 @@
 				<th><form:label path="password">비밀번호</form:label></th>
 				<td><form:password path="password" />
 				<form:errors path="password" /></td>
+			</tr>
+			<tr>
+				<td bgcolor="orange" width="70">업로드</td><td align="center">
+				<input type="file" name=uploadFile"/></td>
 			</tr>	
 		</table>
 		<div>
+			
 			<input type="submit" value="등록">
 			<a href="<c:url value="/board/list" />">목록</a>
 		</div>
