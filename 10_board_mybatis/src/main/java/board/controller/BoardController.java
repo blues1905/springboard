@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,12 +68,14 @@ public class BoardController {
 		if(bindingResult.hasErrors()) {
 			return "/board/write";
 		}
+		
 		if(!uploadFile.isEmpty()) {
 			String originalFileName = uploadFile.getOriginalFilename();
 			String ext = FilenameUtils.getExtension(originalFileName);
 			//확장자 구하기
-			UUID uuid = UUID.randomUUID();	//UUID 구하기
-			fileName = uuid + "." + ext;
+//			UUID uuid = UUID.randomUUID();	//UUID 구하기
+//			fileName = uuid + "." + ext;	//fileName 랜덤
+			fileName = uploadFile.getOriginalFilename();
 			uploadFile.transferTo(new File("C:\\upload\\" + fileName));
 		}
 		boardVO.setFileName(fileName);
