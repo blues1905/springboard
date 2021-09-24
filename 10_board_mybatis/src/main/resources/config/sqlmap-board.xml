@@ -22,7 +22,7 @@
 		                ROW_NUMBER() OVER(ORDER BY SEQ DESC) AS rNum
 		        FROM BOARD
 		                    ) B
-		WHERE rNum BETWEEN 1 AND 10
+		WHERE rNum BETWEEN #{rowStart} AND #{rowEnd}
 		ORDER BY SEQ DESC
 	</select>
 	

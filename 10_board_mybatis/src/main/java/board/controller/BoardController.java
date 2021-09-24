@@ -1,9 +1,14 @@
 package board.controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.UUID;
+import java.net.URLEncoder;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.io.FilenameUtils;
@@ -14,7 +19,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,7 +37,7 @@ public class BoardController {
 		this.boardService = boardService;
 	}
 	
-	@RequestMapping(value="/board/list", method = RequestMethod.GET)
+	@RequestMapping(value="/board/list", method = RequestMethod.GET) 
 	public String list(Model model, Criteria cri) throws Exception{
 		
 		model.addAttribute("boardList", boardService.list(cri));
@@ -46,11 +50,70 @@ public class BoardController {
 		
 		return "/board/list";
 	}
-	@RequestMapping(value="board/read/{seq}")
+	
+	@RequestMapping(value="/board/read/{seq}")
 	public String read(Model model, @PathVariable int seq) {
 		model.addAttribute("boardVO", boardService.read(seq));
-		return "/board/read";
+
+		return "/board/read";  
 	}
+	//파일 다운
+	@RequestMapping(value="/fileDown/{seq}")
+	public void fileDown(@PathVariable int seq,HttpServletRequest req, HttpServletResponse resp) throws IOException{
+		//업로드 파일이 있는 경로
+		String realPath = "C:\\upload\\";
+		BoardVO vo = boardService.read(seq);
+		String filename = vo.getFileName();
+		
+		File downFile = new File(realPath + "\\" + filename);
+		//파일 이름이 파라미터로 넘어오지 않으면 리다이렉트 시킨다.
+//		if(request.getParameter("fileName") == null || "".equals(request.getParameter("fileName"))) {
+		if (downFile.exists() && downFile.isFile()) {
+	         try {
+	            filename = URLEncoder.encode(filename, "utf-8").replaceAll("\\+","%20");
+	            long filesize = downFile.length();
+	            
+	            resp.setContentType("application/octet-stream; charset=utf-8");
+	            resp.setContentLength((int) filesize);
+	            String strClient = req.getHeader("user-agent");
+	            
+	            if (strClient.indexOf("MSIE 5.5") != -1) {
+	               resp.setHeader("Content-Disposition", "filename="
+	                            + filename + ";");
+	                } else {
+	                   resp.setHeader("Content-Disposition",
+	                            "attachment; filename=" + filename + ";");
+	                }
+	            resp.setHeader("Content-Length", String.valueOf(filesize));
+	            resp.setHeader("Content-Transfer-Encoding", "binary;");
+	            resp.setHeader("Pragma", "no-cache");
+	            resp.setHeader("Cache-Control", "private");
+	 
+	                byte b[] = new byte[1024];
+	 
+	                BufferedInputStream in = new BufferedInputStream(
+	                        new FileInputStream(downFile));
+	 
+	                BufferedOutputStream out = new BufferedOutputStream(
+	                      resp.getOutputStream());
+	 
+	                int read = 0;
+	 
+	                while ((read = in.read(b)) != -1) {
+	                    out.write(b, 0, read);
+	                }
+	                out.flush();
+	                out.close();
+	                in.close();
+	            
+	         } catch (Exception e) {
+	            System.out.println("Download Exception : " + e.getMessage());
+	         }
+	      } else {
+	         System.out.println("Download Error : downFile Error [" + downFile + "]");
+	      }
+	}
+	
 	//새 글 작성을 위한 요청을 처리
 	@RequestMapping(value="/board/write", method=RequestMethod.GET)
 	public String write(Model model){

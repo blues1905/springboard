@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,7 +30,13 @@
 		</tr>
 		<tr>
 			<th>조회수</th>
+			
 			<td>${boardVO.cnt}</td>
+		</tr>
+		
+		<tr>
+			<th>첨부파일</th>
+			<td><a method="POST" href="<%= request.getContextPath()%>/fileDown/${boardVO.seq}" ><download>${boardVO.fileName}</a></td>
 		</tr>
 	</table>
 	<div>
